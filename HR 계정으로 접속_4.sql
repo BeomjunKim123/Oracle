@@ -1,15 +1,17 @@
-
 /* DDL, DML, 제약조건 */ 
 
 /*
 SQL ( Structured Query Language) : 에스큐엘, 씨퀄, 구조화된 질의 언어 
+
 select 컬럼명
 from 테이블명[뷰]
 where 조건
 group by 컬럼[그룹핑]
 having 조건[group by 결과의조건]
 order by 정렬컬럼 
+
 SQL 구문의 종류를 분류 
+
 DDL (Data Definition Language)  : 객체(테이블, 계정,  함수, 뷰, 트리거, 저장프로시져, 인덱스, )를 생성하는 언어(구문)
                                 : 스키마(틀, 객체) 를 생성하는 언어 
     - create (생성), alter (수정), drop (삭제) 
@@ -24,6 +26,7 @@ DCL (Data Control Language) : 데이터 제어 언어, 계정에 권한을 부여,수정,제거
     - grant (권한을 부여), revoke (권한을 취소) 
     
 ==============================================================
+
 DQL (Data Query Language) : 데이타 질의 언어 (출력), 
     - Select 
 TCL (Transaction Control Language ) : 트랜잭션 제어 언어 ,   <== DML 발생됨 
@@ -33,6 +36,7 @@ TCL (Transaction Control Language ) : 트랜잭션 제어 언어 ,   <== DML 발생됨
     -- rollback  [ transaction ] : 트랜잭션을 시작시점으로 되될림. 
     
     -- savepoint : 트랜잭션의 임시 저장 시점 설정 
+
 */ 
 
 -- 테이블 생성 : create table 
@@ -106,102 +110,250 @@ select * from dept;
 
 update dept 
 set dname = '제조부'
-where dno = 40; 
+where dno = 40;         -- 
 
 rollback; 
 commit; 
 
-insert into dept(dno, dname)
-values (40, '판매부');
+insert into dept ( dno, dname )
+values (40, '판매부') ; 
 
---dno : where절사용, 중복된 값이 저장되지 않는 컬럼을 사용 (primary key, unique)
-update dept
+-- dno : where 절 사용, 중복된 값이 저장되지않는 컬럼을 사용 ( primary key, Unique ) 
+update dept 
 set dname = 'HR', loc = '대전'
-where dno = 40;
+where dno = 40; 
 
---테이블에는 Primary key 컬럼이 존재해야한다. <== 중복된 값을 넣을수 없도록 제약을 설정
+-- 테이블에는 Primary Key 컬럼이 존재해야 한다.   <== 중복된 값을 넣을수 없도록 제약을 설정  
 
---delete : 테이블의 특정 레코드 삭제 : 주의 : 반드시 where조건 (primary key, unique컬럼)을 사용해야 한다.
+
+-- delete : 테이블의 특정 레코드 삭제 : 주의 : : 반드시 where조건(Primary Key, Unique 컬럼 ) 을 사용해야 한다.
 delete dept
-where dno = 40;
+where dno = 40; 
 
-commit;
+commit; 
 
-/* 제약조건 : 컬럼에 부여되는 제약, primary key, unique, defalut, not null, check
-        특정 컬럼에 무결성을 확보하기 위해서 부여
-    primary key : 
-        --중복된 값을 넣지 못하도록 설정
-        --not null
-        --테이블에 한번만 넣을 수 있다. 여러 컬럼에 하나의 primary key를 넣을 수 있다.
-        --Index가 자동으로 생성된다. <== 검색을 빠르게 함
-        --update, delete시 where 절에서 사용되는 컬럼
-*/
+
+/* 제약 조건 : 컬럼에 부여되는 제약, Primary Key, Unique, Not null, Check, Foreign Key, /  Default,  
+        특정 컬럼에 무결성 을 확보하기 위해서 부여 
+    Primary Key : 
+        -- 중복된 값을 넣지 못하도록 설정
+        -- NOT NULL 
+        -- 테이블에 한번만 넣을 수 있다. 여러 컬럼에 하나의 Primary Key 를 넣을 수 있다. 
+        -- INDEX 가 자동으로 생성된다.   <== 검색을 빠르게 함. 
+        -- update, delete 시 where 절에서 사용되는  컬럼
+        -- JOIN 시 On 절에서 사용되는 컬럼 
+    Unique : 
+        -- 중복된 값을 넣을수 없다. 
+        -- null             <== 1 번만 넣을 수 있다.
+        -- not null 컬럼에도 생성 가능 
+        -- 하나의 테이블어 여러번 넣을 수 있다. 
+        -- INDEX 가 자동으로 생성됨    <== 검색을 빠르게 함. 
+        -- update, delete 시 where 절에서 사용되는  컬럼
+        -- JOIN 시 On 절에서 사용되는 컬럼
+    Not null 
+        -- 반드시 값이 입력되어야 한다. NULL을 넣을수 없도록 
+    Check
+        -- 컬럼에 들어오는 값을 체크해서 저장, 조건에 만족하는 값만 넣도록      age > 0 
+    Foreign Key 
+        -- 부모테이블의 특정 컬럼을 참조해서 값을 넣을 수 있도록 설정 
+        -- 부모 테이블의 참조 하는 컬럼은 Primary Key, Unique 키 컬럼을 참조 
+        
+    Default : 컬럼에 값을 넣지 않는 경우, Default 로 설정된 값이 자동으로 들어감. 
+        -- 제약조건이 아니어서 제약조건 이름을 부여 할 수 없다. 
+        -- null , not null 앞에 처리해야함. <<주의>>
+    
+    데이터 사전 : 오라클에서 테이블에 대한 각종 정보를 저장한 테이블 
+        user_constraints                     -- 제약 조건을 확인하는 데이터 사전 
+        select * from user_constraints 
+*/ 
 
 create table member1 (
-    id varchar2(50) not null Primary key,
-    pass varchar2(50) not null,
-    addr varchar2(100) null,
-    phone varchar(30) null,
-    age number (3),  --정수3자리
-    weight number(5,2) --실수 : 전체5자리, 소숫점이하 2자리
-);
+    id varchar2(50) not null Primary key, 
+    pass varchar2(50) not null , 
+    addr varchar2(100) null, 
+    phone varchar2(30) null,
+    age number (3) ,        -- 정수 3자리
+    weight number(5,2)      -- 실수 : 전체 5자리, 소숫점이하 2자리 
+); 
 
---Insert
-insert into member1
-values('aaa', 'aaa', '서울', '010-1111-1111', 20, 70.55);
+-- Insert 
+insert into member1 
+values ( 'ddd', 'aaa', '서울', '010-1111-1111', 20, 70.55); 
 
-select * from member1;
+select * from member1; 
 
-commit;
+commit ; 
 
---update시 primary key 컬럼을 조건으로 처리
-update member1
+-- update 시 where 조건에 primary key 컬럼을 조건으로 처리 
+
+update member1 
 set addr = '부산', phone = '010-2222-2222', age = 30, weight = 88.55
-where id = 'bbb'
+where id = 'bbb' 
 
---delete시 where조건에 primary key 컬럼을 조건으로 처리
+-- delete 시 where 조건에 primary key 컬럼을 조건으로 처리
 delete member1
-where id = 'ccc';
+where id ='ccc'; 
 
 
-/*
-    데이터 사전 : 오라클에서 테이블에 대한 각종 정보를 저장한 테이블
-        user_constraints  --제약조건을 확인하는 데이터 사전
-        select * from user_constraints
-*/
-
+/* Unique */ 
 
 create table member2 (
-    id varchar2(50) not null Primary key,
-    pass varchar2(50) not null Unique,
-    addr varchar2(100) null,
+    id varchar2(50) not null Primary key, 
+    pass varchar2(50) not null Unique , 
+    addr varchar2(100) null , 
     phone varchar2(30) null Unique,
-    age number(3), --정수 3자리
-    weight number(5,2) --실수 : 전체 5자리, 소숫점이하 2자리
-);
+    age number (3) ,        
+    weight number(5,2)      
+); 
 
---Insert
-insert into member2
-values ('aaaa', 'bbbb', '서울','010-1111-1111', 10, 70.55);
+-- Insert 
+insert into member2 
+values ( 'bbbb', 'bbbbb', '서울', '010-2222-2222', 10, 70.55); 
 
-select * from member2;
-commit;
+select * from member2; 
+commit; 
 
---오라클의 데이터 사전을 사용해서 member2테이블의 제약조건을 확인
-show user; --현재 접속한 계정 정보를 출력 : C##HR
+-- 오라클의 데이터 사전을 사용해서 member2 테이블의 제약조건을 확인
+show user;    -- 현재 접속한 계정 정보를 출력 : C##HR
 
 select * from user_constraints
-where table_name = 'MEMBER2';
-
---테이블 생성시 제약조건 이름을 부여하면서 제약조건 할당
+where table_name = 'MEMBER2'; 
 
 
-/*check : 컬럼의 값을 체크 */
+-- 테이블 생성시 제약 조건이름을 부여하면서 제약 조건 할당. 
+-- 제약 조건 이름은 :  PK_테이블이름_컬럼명 
+
+create table member3 (
+    id varchar2(50) not null constraint PK_MEMBER3_ID Primary key, 
+    pass varchar2(50) not null constraint U_MEMBER3_PASS Unique , 
+    addr varchar2(100) null , 
+    phone varchar2(30) null constraint U_MEMBER3_PHONE Unique,
+    age number (3) ,        
+    weight number(5,2)      
+); 
+
+-- Insert 
+insert into member3
+values ( 'bb', 'bb', '서울', '010-1111-2222', 10, 70.55); 
+
+select * from member3; 
+commit; 
+
+/* check : 컬럼의 값을 체크 */ 
 create table member4 (
-    id varchar2(50) not null constraint PK_MEMBER4_ID Primary key,
-    pass varchar2(50) not null constraint U_MEMBER4 Unique,
-    addr varchar2(100) null,
+    id varchar2(50) not null constraint PK_MEMBER4_ID Primary key, 
+    pass varchar2(50) not null constraint U_MEMBER4_PASS Unique , 
+    addr varchar2(100) null , 
     phone varchar2(30) null constraint U_MEMBER4_PHONE Unique,
-    age number(3) check(age > 0 and age <150), --정수 3자리
-    weight number(5,2) --실수 : 전체 5자리, 소숫점이하 2자리
+    age number (3)  constraint CK_MEMBER4_AGE   check ( age > 0 and age < 150 )  ,  
+    gender char(1)  constraint CK_MEMBER4_GENDER   check( gender in ('W', 'M') ) , 
+    weight number(5,2)      
+); 
+
+-- 제약 조건 출력 
+select * from user_constraints
+where table_name = 'MEMBER4'; 
+
+-- Insert 
+insert into member4
+values ( 'b', 'b', '서울', '010-1111-2222', 70, 'M', 70.55); 
+
+select * from member4; 
+commit; 
+
+/* Default : 값을 넣지 않으면 Default 로 설정된 값이 자동으로 들어감 */ 
+
+create table member5 (
+    id varchar2(50) not null constraint PK_MEMBER5_ID Primary key, 
+    pass varchar2(50) not null constraint U_MEMBER5_PASS Unique , 
+    addr varchar2(100)  default '서울' null , 
+    phone varchar2(30) null constraint U_MEMBER5_PHONE Unique,
+    age number (3) null  constraint CK_MEMBER5_AGE   check ( age > 0 and age < 150 )  ,  
+    gender char(1) null constraint CK_MEMBER5_GENDER   check( gender in ('W', 'M') ) , 
+    weight number(5,2) default 10.00 null  , 
+    hiredate date default sysdate
+); 
+
+drop table member5; 
+
+-- Insert  : default 에 값 할당 : default 키를 사용하는 경우 
+insert into member5
+values ( 'b', 'b', default , '010-1111-2222', 70, 'M',default, default); 
+
+-- Insert  : default 에 값 할당 : 컬럼이 명시 되지 않는 경우 
+insert into member5 (id, pass, phone, age, gender)
+values ( 'c', 'c', '010-1111-3333', 70, 'M'); 
+
+
+select * from member5; 
+commit; 
+
+/* Foreign Key : 부모 테이블의 특정컬럼을 참조해서 값을 넣도록 설정 
+     - 부모 테이블의 Primary Key, Unique 키 컬럼을 참조 
+     - Foreign Key는 자식 테이블의 특정 컬럼에 넣는다. 
+
+*/ 
+
+-- employee 테이블의 dno 컬럼은 Foreign Key ====> Department 테이블의 dno 컬럼을 참조 
+--  employee 테이블의 dno 컬럼의 값들 할당할때 department테이블의 dno 컬럼의 값을 참조후 할당. 
+
+select * from department ;        -- 부서 정보를 저장하는 테이블  (부모 테이블) dno 
+select * from employee;           -- 사원 정보를 저장하는 테이블   (자식 테이블 : Foreign Key (dno)) 
+
+desc employee;
+
+-- employee의 dno 컬럼은 department의 dno를 참조함. 
+insert into employee (eno, ename, job, manager, hiredate, salary, commission, dno) 
+values (8000, 'PJW', 'MANAGER', 7369, sysdate, 1000, 100, 10); 
+
+select * from employee; 
+rollback; 
+
+/* Foreign Key 실습 테이블 생성 */ 
+
+-- 부모 테이블 생성 (PK, UK) 
+create table ParentTbl (
+    info number constraint PK_ParentTbl_info Primary key, 
+    name varchar2 (20), 
+    age number(3) check ( age > 0 and age < 200), 
+    gender char(1) check ( gender in ('W', 'M'))
 );
+
+-- 부모테이블의 더미(Dumy)  데이터 넣기  
+insert into ParentTbl ( info, name, age, gender ) 
+values ( 10, '홍길동', 22, 'M'); 
+
+insert into ParentTbl ( info, name, age, gender ) 
+values ( 20, '이길동', 32, 'M'); 
+
+insert into ParentTbl ( info, name, age, gender ) 
+values ( 30, '김길동', 42, 'M'); 
+
+insert into ParentTbl ( info, name, age, gender ) 
+values ( 40, '송길동', 52, 'M'); 
+
+commit; 
+
+select * from ParentTbl; 
+
+
+-- 자식 테이블 생성 ( FK ) 
+create table ChildTbl (
+    id varchar2(40) constraint PK_ChildTbl Primary Key,
+    pw varchar2(40), 
+    info number, 
+        constraint FK_ChildTbl_info foreign key (info) references ParentTbl(info)
+); 
+
+-- 자식 테이블의 더미 데이터 입력 
+insert into ChildTbl ( id, pw, info ) 
+values ( 'aaa', 'aaa', 10); 
+
+insert into ChildTbl ( id, pw, info ) 
+values ( 'bbb', 'aaa', 10); 
+
+insert into ChildTbl ( id, pw, info ) 
+values ( 'ccc', 'aaa', 30); 
+
+insert into ChildTbl ( id, pw, info ) 
+values ( 'ddd', 'aaa', 40); 
