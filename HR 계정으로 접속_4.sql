@@ -339,7 +339,7 @@ select * from ParentTbl;
 
 -- 자식 테이블 생성 ( FK ) 
 create table ChildTbl (
-    id varchar2(40) constraint PK_ChildTbl Primary Key,
+    id varchar2(40) constraint PK_ChildTbl_id Primary Key,
     pw varchar2(40), 
     info number, 
         constraint FK_ChildTbl_info foreign key (info) references ParentTbl(info)
@@ -358,16 +358,20 @@ values ( 'ccc', 'aaa', 30);
 insert into ChildTbl ( id, pw, info ) 
 values ( 'ddd', 'aaa', 40); 
 
---FK가 참조하는 부모테이블은 drop되지 않는다.
-    --1. 자식 테이블을 먼저 삭제후 부모 테이블 삭제
-    --2. 부모 테이블을 삭제하면서 cascade 옵션을 사용해서
-    
---부모 테이블 삭제
-drop table ParentTb1;
+commit; 
 
---1. 자식테이블을 먼저 제거후 부모
-drop table ParentTb1;
-drop table ChildTb1;
+select * from ChildTbl; 
 
---2.부모테이블을 삭제하면서 cascade 옵션을 사용하면 강제 삭제 된다.
-drop table ParentTb1 cascade constraints;
+-- FK 가 참조하는 부모 테이블은 drop 되지 않는다. 
+    -- 1. 자식 테이블을 먼저 삭제후 부모 테이블 삭제 
+    -- 2. 부모 테이블을 삭제하면서 cascade constraints 옵션을 사용하면 강제 삭제 된다. 
+
+-- 부모 테이블 삭제 되지 않는다.    
+drop table ParentTbl ; 
+
+-- 1. 자식테이블을 먼저 제거후 부모 테이블 삭제 
+drop table ChildTbl; 
+drop table ParentTbl ;
+
+-- 2. 부모 테이블을 삭제하면서 cascade 옵션을 사용하면 강제 삭제 된다. 
+drop table ParentTbl cascade constraints ; 
