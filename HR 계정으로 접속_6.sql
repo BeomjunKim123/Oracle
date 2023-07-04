@@ -355,3 +355,40 @@ select * from v_sasu_info;
 
 -- view 의 저장된 코드 정보를 확인 : 데이터 사전을 사용해서 확인 
 select * from user_views; 
+
+
+
+--07/04
+--Outer Join : ANSI
+
+alter table dept05
+add constraint FK_EMP05_DNO foreign key (dno) reference dept05 (dno)
+
+-- INNER JOIN : 두테이블의 공동 키컬럼이 일치하는 것만 출력
+select eno, ename, salary, e.dno, d.dno, dname, loc
+from emp05 e Inner Join dept05 d
+on e.dno = d.dno
+
+select * from dept05;
+
+select distinct dno from emp05;
+
+--RightER OUTER JOIN : 오른쪽 테이블의 모든 내용을 출력 <== EQUI JOIN
+select eno, ename, salary, e.dno, d.dno, dname loc
+from emp05 e, dept05 d
+where e.dno (+) = d.dno 
+
+--Natural Join : 두 테이블의 공통 키컬럼을 자동으로 식별
+select eno, ename, salary, dno, dname, loc
+from emp05 e Natural JOIN dept05 d
+
+--SELF JOIN : 자신의 테이블을 한 번 더 JOIN, 반드시 별칭이름 사용
+select * from emp05;
+order by ename asc;
+
+select eno, ename, manager, eno, ename, manager from emp05;
+
+select e.eno, e.ename, e.manager, m.eno, m.ename
+from emp05 e, emp05 m
+where e.manager = m.eno
+order by e.ename = asc;
