@@ -255,3 +255,7 @@ ERD (Entity Relationship Diagram) : 데이타 베이스 모델링 설계도
     
     4. 구현 : Oracle, Mysql, MS-SQL.....
 */
+
+create user C##HR2 identified by 1234
+    default tablespace USERS
+    temporary tablespace TEMP;
